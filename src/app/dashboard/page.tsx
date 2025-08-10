@@ -18,7 +18,7 @@ export default function DashboardPage() {
       setCheckingAuth(false);
     }
   }
-}, [token, loading]);
+}, [token, loading, router]);
 
 
 

@@ -16,7 +16,7 @@ export default function LoginPage() {
     try {
       await login(email, password);
       router.push('/');
-    } catch (err) {
+    } catch {
       setError('Login failed. Check your credentials.');
     }
   };

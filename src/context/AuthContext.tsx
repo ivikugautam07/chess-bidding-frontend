@@ -1,14 +1,12 @@
 'use client';
 
-'use client';
-
-import { createContext, useState, useContext, useEffect } from 'react';
+import { createContext, useState, useContext, useEffect, useCallback } from 'react';
 // rest of your code
 import { useRouter } from 'next/navigation'; // ✅ Import router
 
 // Define the shape of the user object
 type User = {
-  username: any;
+  username?: string | null;
   id: number;
   email: string;
 };
@@ -33,6 +31,22 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [loading, setLoading] = useState<boolean>(true);
   const router = useRouter(); // ✅ Initialize router
 
+  const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || '';
+
+  const fetchUser = useCallback(async (jwt: string) => {
+    try {
+      const res = await fetch(`${API_BASE}/auth/me`, {
+        headers: { Authorization: `Bearer ${jwt}` },
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setUser(data);
+      }
+    } catch (err) {
+      console.error('Failed to fetch user:', err);
+    }
+  }, [API_BASE]);
+
   // Load token and fetch user on app start
   useEffect(() => {
     const storedToken = localStorage.getItem('token');
@@ -46,26 +60,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     };
 
     initAuth();
-  }, []);
-
-  // Fetch user details using JWT
-  const fetchUser = async (jwt: string) => {
-    try {
-      const res = await fetch('http://localhost:3000/auth/me', {
-        headers: { Authorization: `Bearer ${jwt}` },
-      });
-      if (res.ok) {
-        const data = await res.json();
-        setUser(data);
-      }
-    } catch (err) {
-      console.error('Failed to fetch user:', err);
-    }
-  };
+  }, [fetchUser]);
 
   // Login function with redirect to homepage
   const login = async (email: string, password: string) => {
-    const res = await fetch('http://localhost:3000/auth/login', {
+    const res = await fetch(`${API_BASE}/auth/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password }),
@@ -84,7 +83,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   // Signup function (calls login after creating account)
   const signup = async (email: string, password: string) => {
-    const res = await fetch('http://localhost:3000/auth/signup', {
+    const res = await fetch(`${API_BASE}/auth/signup`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password }),

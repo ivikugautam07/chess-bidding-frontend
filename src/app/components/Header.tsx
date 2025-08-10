@@ -3,7 +3,7 @@
 import { useAuth } from '@/context/AuthContext'; // ✅ ensure casing matches the file
 import { useState } from 'react';
 import Link from 'next/link';
-import styles from './header.module.css'; // ✅ ensure file name is lowercase
+import styles from './Header.module.css'; // ✅ ensure file name matches actual casing
 
 export default function Header() {
   const { user, logout } = useAuth();

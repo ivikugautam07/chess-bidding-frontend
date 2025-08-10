@@ -4,19 +4,19 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import styles from './styles/hero.module.css';
-import Image from 'next/image';
+// import Image from 'next/image';
 import Header from './components/Header';
 
 export default function Home() {
   const router = useRouter();
-  const { user, token, logout, loading } = useAuth();
+  const { user, loading } = useAuth();
 
   // 🔒 Redirect to /auth if not logged in
   useEffect(() => {
     if (!loading && !user) {
       router.push('/auth');
     }
-  }, [user, loading]);
+  }, [user, loading, router]);
 
   // 🕗 Show loading while checking auth
   if (loading) {
@@ -268,7 +268,7 @@ export default function Home() {
                 },
               ].map((testimonial, index) => (
                 <div key={index} className={styles.testimonialCard}>
-                  <p className={styles.quote}>"{testimonial.quote}"</p>
+                  <p className={styles.quote}>&ldquo;{testimonial.quote}&rdquo;</p>
                   <p className={styles.name}>– {testimonial.name}</p>
                 </div>
               ))}

@@ -16,7 +16,7 @@ export default function SignupPage() {
     try {
       await signup(email, password);
       router.push('/'); // Redirect to home after signup
-    } catch (err) {
+    } catch {
       setError('Signup failed. Try a different email.');
     }
   };
